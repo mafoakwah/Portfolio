@@ -1,0 +1,166 @@
+---
+title: "Data Cleaning"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(include = TRUE)
+```
+
+```{r include=FALSE}
+library(tidyverse)
+library(plotly)
+library(DT)
+library(scales)
+Sales_Export_2019_2020 <- read_csv("C:/Users/Matthew Afoakwah/Downloads/archive (3)/Sales-Export_2019-2020.csv")
+
+#Number of rows and column in dataset.
+dim(Sales_Export_2019_2020)
+#Column Names.
+names(Sales_Export_2019_2020)
+
+#Number of NA value in Database.
+sum(is.na(Sales_Export_2019_2020))
+
+#Determining different attributes in each char attribute.
+unique(Sales_Export_2019_2020$country)
+
+unique(Sales_Export_2019_2020$category)
+
+unique(Sales_Export_2019_2020$customer_name)
+
+unique(Sales_Export_2019_2020$sales_manager)
+
+unique(Sales_Export_2019_2020$sales_rep)
+
+unique(Sales_Export_2019_2020$device_type)    
+
+#Removing duplicates
+distinct(Sales_Export_2019_2020)
+
+#identifying number of rows
+nrow(Sales_Export_2019_2020)
+
+#Identifying outliers. 
+boxplot(Sales_Export_2019_2020$cost)
+boxplot(Sales_Export_2019_2020$order_value_EUR)
+
+#Previewing dataset.
+glimpse(Sales_Export_2019_2020)
+```
+
+Previously I had explored the dataset Sales_Export_2019_2020. Here I will transform the dataset to understand which companies had the most profit from sales. Also, determine which country had the most cost based on their category and which category contributed to the most significant profit in 2019 and 2020.
+
+### Cost of Each Category per Country
+
+```{r echo=TRUE}
+#Total cost of for each country based on category, and ratio of sales per country.
+CountryTotalcostExport <- Sales_Export_2019_2020 %>%
+  group_by(country)%>%
+  mutate(costTotal = sum(cost)) %>%
+  group_by(country, category) %>%
+  summarise(costCategoryTotal = sum(cost), costCategoryPercentage = (costCategoryTotal / costTotal)*100)
+
+#Removing Duplicate rows
+CountryTotalcostExport <- distinct(CountryTotalcostExport)
+CountryTotalcostExport %>%
+  datatable()
+```
+
+### Total Sale of Each Category per Country
+
+```{r echo=TRUE}
+#Total sale of each country by category
+ CountryTotalSaleExport <- Sales_Export_2019_2020 %>%
+  group_by(country)%>%
+  mutate(saleTotal = sum(order_value_EUR)) %>%
+  group_by(country, category) %>%
+  summarise(saleCategoryTotal = sum(order_value_EUR), saleCategoryPercentage = (saleCategoryTotal / saleTotal)*100) 
+
+#Removing Duplicate rows
+CountryTotalSaleExport <- distinct(CountryTotalSaleExport)
+
+CountryTotalSaleExport %>%
+  datatable()
+
+```
+
+### Profit from Sales
+
+```{r}
+
+#Total profit by country and category 
+CoProfit <- Sales_Export_2019_2020 %>%
+  group_by(country) %>%
+  mutate(CostTotal = sum(cost), SaleTotal = sum(order_value_EUR), GrossProfit = SaleTotal - CostTotal) %>%
+  group_by(country, category) %>%
+  summarise(ctotal = sum(cost), stotal = sum(order_value_EUR), GProfit = stotal - ctotal, ProfitPercentage = GProfit/ GrossProfit)
+
+#Selecting only certain columns for the dateset.  
+CoProfit <- CoProfit %>%  
+  select(country, category, GProfit, ProfitPercentage)
+
+CoProfit <- distinct(CoProfit)
+CoProfit$ProfitPercentage <- label_percent(big.mark = ",", suffix = "%")(CoProfit$ProfitPercentage)
+
+CoProfit %>%
+  datatable()
+
+
+
+```
+
+### Profit Based on Country
+
+```{r echo=TRUE}
+#Total profit by country 
+CountryProfit <- Sales_Export_2019_2020 %>%
+  group_by(country) %>%
+  mutate(CostTotal = sum(cost), SaleTotal = sum(order_value_EUR)) %>%
+  summarise(GrossProfit = SaleTotal - CostTotal)
+
+#Remove duplicate rows
+CountryProfit <- distinct(CountryProfit)
+
+CountryProfit %>%
+  datatable()
+```
+
+### 
+
+### Profit Based on Category
+
+```{r echo=TRUE}
+#Total Gross Profit by Category
+CategoryProfit <- Sales_Export_2019_2020 %>%
+  group_by(category) %>%
+  mutate(CostTotal = sum(cost), SaleTotal = sum(order_value_EUR)) %>%
+  summarise(GrossProfit = SaleTotal - CostTotal)
+
+#Removing duplicate rows.
+CategoryProfit <- distinct(CategoryProfit)
+
+CountryProfit %>%
+  datatable()
+```
+
+### Profit Ratio Per Country
+
+```{r}
+#Total profit by country and category 
+CoProfit <- Sales_Export_2019_2020 %>% 
+  group_by(country) %>% mutate(CostTotal =
+sum(cost), SaleTotal = sum(order_value_EUR), GrossProfit = SaleTotal -
+CostTotal) %>% 
+  group_by(country, category) %>% 
+  summarise(ctotal =sum(cost), stotal = sum(order_value_EUR), GProfit = stotal - ctotal, GrossProfit, ProfitPercentage = GProfit/ GrossProfit)
+
+
+#removing duplicate rows
+CoProfit <- distinct(CoProfit)
+
+#Changing ProfitPercent from a decimal to percent
+CoProfit$ProfitPercentage <- label_percent(big.mark = ",", suffix = "%")(CoProfit$ProfitPercentage)
+
+CoProfit %>% datatable()
+```

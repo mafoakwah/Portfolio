@@ -1,0 +1,181 @@
+---
+title: "Visualization"
+output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include=FALSE}
+library(tidyverse)
+library(plotly)
+library(DT)
+library(scales)
+Sales_Export_2019_2020 <- read_csv("C:/Users/Matthew Afoakwah/Downloads/archive (3)/Sales-Export_2019-2020.csv")
+
+#Number of rows and column in dataset.
+dim(Sales_Export_2019_2020)
+#Column Names.
+names(Sales_Export_2019_2020)
+
+#Number of NA value in Database.
+sum(is.na(Sales_Export_2019_2020))
+
+#Determining different attributes in each char attribute.
+unique(Sales_Export_2019_2020$country)
+
+unique(Sales_Export_2019_2020$category)
+
+unique(Sales_Export_2019_2020$customer_name)
+
+unique(Sales_Export_2019_2020$sales_manager)
+
+unique(Sales_Export_2019_2020$sales_rep)
+
+unique(Sales_Export_2019_2020$device_type)    
+
+#Removing duplicates
+distinct(Sales_Export_2019_2020)
+
+#identifying number of rows
+nrow(Sales_Export_2019_2020)
+
+#Identifying outliers. 
+boxplot(Sales_Export_2019_2020$cost)
+boxplot(Sales_Export_2019_2020$order_value_EUR)
+
+#Previewing dataset.
+glimpse(Sales_Export_2019_2020)
+```
+
+```{r include=FALSE}
+#Total cost of for each country based on category, and ratio of sales per country.
+CountryTotalcostExport <- Sales_Export_2019_2020 %>%
+  group_by(country)%>%
+  mutate(costTotal = sum(cost)) %>%
+  group_by(country, category) %>%
+  summarise(costCategoryTotal = sum(cost), costCategoryPercentage = (costCategoryTotal / costTotal)*100)
+
+#Removing Duplicate rows
+CountryTotalcostExport <- distinct(CountryTotalcostExport)
+CountryTotalcostExport %>%
+  datatable()
+
+CountryTotalSaleExport <- Sales_Export_2019_2020 %>%
+  group_by(country)%>%
+  mutate(saleTotal = sum(order_value_EUR)) %>%
+  group_by(country, category) %>%
+  summarise(saleCategoryTotal = sum(order_value_EUR), saleCategoryPercentage = (saleCategoryTotal / saleTotal)*100) 
+
+#Removing Duplicate rows
+CountryTotalSaleExport <- distinct(CountryTotalSaleExport)
+
+CountryTotalSaleExport %>%
+  datatable()
+
+#Total profit by country 
+CountryProfit <- Sales_Export_2019_2020 %>%
+  group_by(country) %>%
+  mutate(CostTotal = sum(cost), SaleTotal = sum(order_value_EUR)) %>%
+  summarise(GrossProfit = SaleTotal - CostTotal)
+
+#Remove duplicate rows
+CountryProfit <- distinct(CountryProfit)
+
+CountryProfit %>%
+  datatable()
+
+#Total Gross Profit by Category
+CategoryProfit <- Sales_Export_2019_2020 %>%
+  group_by(category) %>%
+  mutate(CostTotal = sum(cost), SaleTotal = sum(order_value_EUR)) %>%
+  summarise(GrossProfit = SaleTotal - CostTotal)
+
+#Removing duplicate rows.
+CategoryProfit <- distinct(CategoryProfit)
+
+CountryProfit %>%
+  datatable()
+```
+
+### Sales By Country and Category
+
+```{r}
+orders <- ggplot(data = Sales_Export_2019_2020, aes(x = country, y = order_value_EUR, fill = category)) + geom_smooth(aes(group = category)) + scale_y_continuous(labels = scales::comma) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+
+ggplotly(orders)
+
+```
+
+```{r}
+#Total Sales of each category by country 
+TCCSales <- ggplot(data = CountryTotalSaleExport, aes(x = country, y = saleCategoryTotal, fill = category)) +
+  geom_col() + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + labs(title = "Total Sales of Each Countries Exports by Category (2019-2020))", x = "Country", y = "Cost Total") + scale_y_continuous(labels = scales::comma) 
+
+ggplotly(TCCSales)
+```
+
+### Cost Per Category for Each Country
+
+```{r}
+
+#Total cost of each category by country
+TCCCost <- ggplot(data = CountryTotalcostExport, aes(x = country, y = costCategoryTotal, colour = category)) + geom_point() + geom_line(aes(group = category)) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + labs(title = "Total Cost of Each Countries Exports by Category (2019-2020))", x = "Country", y = "Cost Total") + scale_y_continuous(labels = scales::comma) 
+
+ggplotly(TCCCost) 
+```
+
+### Gross Profit for Each Country
+
+```{r}
+#Gross Profit by country
+CGProfit <- ggplot(data = CountryProfit, aes(x = reorder(country, GrossProfit), y = GrossProfit)) + geom_point() + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + labs(title = "Cross Profit Per Country (2019-2020))", x = "Country", y = "Total Gross Profit") + scale_y_continuous(labels = scales::comma) 
+
+ggplotly(CGProfit)
+
+```
+
+### Gross Profit based on Category
+
+```{r}
+#Gross Profit by category
+CProfit <- ggplot(data = CategoryProfit, aes(x = category, y = GrossProfit, fill = category, )) + geom_tile(aes()) +  scale_y_continuous(labels = scales::comma) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+
+ggplotly(CProfit)
+```
+
+```{r include=FALSE}
+
+#Total profit by country and category 
+CoProfit <- Sales_Export_2019_2020 %>% 
+  group_by(country) %>% mutate(CostTotal =
+sum(cost), SaleTotal = sum(order_value_EUR), GrossProfit = SaleTotal -
+CostTotal) %>% 
+  group_by(country, category) %>% 
+  summarise(ctotal =sum(cost), stotal = sum(order_value_EUR), GProfit = stotal - ctotal, GrossProfit, ProfitPercentage = GProfit/ GrossProfit)
+
+
+
+CoProfit <- distinct(CoProfit)
+CoProfit$ProfitPercentage <- label_percent(big.mark = ",", suffix = "%")(CoProfit$ProfitPercentage)
+
+CoProfit %>% datatable()
+```
+
+```{r}
+#Loop that creates a p char for every country
+for (country in unique(CoProfit$country)) { country_data <-
+CoProfit %>% filter(country == country)
+
+pie_chart <- ggplot(data = country_data, aes(x = "", y = GProfit, fill
+= category)) + geom_bar(stat ="identity") + coord_polar(theta = "y") +
+theme_void() + labs(title = paste("Total Gross Profit based on Category
+Contribution -", country))
+
+print(pie_chart)
+
+}

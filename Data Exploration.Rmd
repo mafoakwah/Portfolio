@@ -1,0 +1,92 @@
+---
+title: "Data Cleaning"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library("tidyverse")
+library(plotly)
+library(DT)
+library(scales)
+```
+
+```{r eval=FALSE, include=TRUE}
+Sales_Export_2019_2020 <- Read_csv(data/Sales_Export_2019_2020)
+```
+
+```{r, include=FALSE}
+Sales_Export_2019_2020 <- read_csv("C:/Users/Matthew Afoakwah/Downloads/archive (3)/Sales-Export_2019-2020.csv")
+
+```
+
+```{r}
+#Number of rows and column in dataset.
+dim(Sales_Export_2019_2020)
+```
+
+```{r}
+#Column Names.
+names(Sales_Export_2019_2020)
+```
+
+```{r}
+#Number of NA value in Database.
+sum(is.na(Sales_Export_2019_2020))
+```
+
+```{r}
+#Attributes in country
+unique(Sales_Export_2019_2020$country)
+```
+
+```{r}
+#attributes in category
+unique(Sales_Export_2019_2020$category)
+
+```
+
+```{r}
+#Attributes in customer_name 
+unique(Sales_Export_2019_2020$customer_name)
+
+```
+
+```{r}
+#attributes in sales_manager
+unique(Sales_Export_2019_2020$sales_manager)
+```
+
+```{r}
+#Attributes in sales_rep
+unique(Sales_Export_2019_2020$sales_rep)
+```
+
+```{r}
+#Attributes in device_type
+unique(Sales_Export_2019_2020$device_type)    
+```
+
+```{r}
+#Removing duplicates
+distinct(Sales_Export_2019_2020)
+```
+
+```{r}
+#identifying number of rows
+nrow(Sales_Export_2019_2020)
+```
+
+```{r}
+#Identifying outliers. 
+boxplot(Sales_Export_2019_2020$cost) 
+boxplot(Sales_Export_2019_2020$order_value_EUR)
+```
+
+```{r}
+#Previewing dataset.
+glimpse(Sales_Export_2019_2020)
+```
