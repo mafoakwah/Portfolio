@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+		<title>Matthew Afoakwah Portfolio</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper" class="fade-in">
+
+
+				<!-- Header -->
+					<header id="header">
+						<a href="index.html" class="logo">Matthew Afoakwah</a>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li><a href="index.html">Home</a></li>
+							<li><a href="AboutMe.html">About Me</a></li>
+						</ul>
+						<ul class="icons">
+							<li><a href="https://www.linkedin.com/in/mafoakwah/" class="icon brands fa-linkedin"><span class="label">Linkedin</span></a></li>
+							<li><a href="#" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+                    
+        <div id="main">
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Matthew Afoakwah" />
+
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div id="main">
+
+
+
+<h1 class="title">Data Exploration </h1>
+
+<h2 class = "title">(Deluxe's Sales_Export_2019_2020) </h2>
+</div>
+<p> The dataset that will be used for this project is based on the online retailer Deluxes's sales. Deluxe is an online retailer based in the UK.
+  Here we will explore the dataset and the attributes associated with Deluxe such as the country, category, sales, costs, Overall Profit. The goal 
+  in this project is to create visualizations in order to gain insight of Deluxes Sales in 2019 and 2020.
+</p>
+<pre class="r"><code>library(&quot;tidyverse&quot;)</code></pre>
+<pre><code>## Warning: package &#39;tidyverse&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;tibble&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;tidyr&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;readr&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;forcats&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## Warning: package &#39;lubridate&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.1     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.1     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(plotly)</code></pre>
+<pre><code>## Warning: package &#39;plotly&#39; was built under R version 4.2.3</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plotly&#39;
+## 
+## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     last_plot
+## 
+## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter
+## 
+## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     layout</code></pre>
+<pre class="r"><code>library(DT)</code></pre>
+<pre><code>## Warning: package &#39;DT&#39; was built under R version 4.2.3</code></pre>
+<pre class="r"><code>library(scales)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;scales&#39;
+## 
+## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     discard
+## 
+## The following object is masked from &#39;package:readr&#39;:
+## 
+##     col_factor</code></pre>
+<pre class="r"><code>Sales_Export_2019_2020 &lt;- Read_csv(data/Sales_Export_2019_2020)</code></pre>
+<pre class="r"><code>#Number of rows and column in dataset.
+dim(Sales_Export_2019_2020)</code></pre>
+<pre><code>## [1] 1000   10</code></pre>
+<pre class="r"><code>#Column Names.
+names(Sales_Export_2019_2020)</code></pre>
+<pre><code>##  [1] &quot;country&quot;         &quot;order_value_EUR&quot; &quot;cost&quot;            &quot;date&quot;           
+##  [5] &quot;category&quot;        &quot;customer_name&quot;   &quot;sales_manager&quot;   &quot;sales_rep&quot;      
+##  [9] &quot;device_type&quot;     &quot;order_id&quot;</code></pre>
+<pre class="r"><code>#Number of NA value in Database.
+sum(is.na(Sales_Export_2019_2020))</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>#Attributes in country
+unique(Sales_Export_2019_2020$country)</code></pre>
+<pre><code>##  [1] &quot;Sweden&quot;      &quot;Finland&quot;     &quot;Portugal&quot;    &quot;Spain&quot;       &quot;UK&quot;         
+##  [6] &quot;France&quot;      &quot;Netherlands&quot; &quot;Belgium&quot;     &quot;Bulgaria&quot;    &quot;Luxembourg&quot; 
+## [11] &quot;Italy&quot;       &quot;Ireland&quot;     &quot;Germany&quot;     &quot;Denmark&quot;     &quot;Austria&quot;</code></pre>
+<pre class="r"><code>#attributes in category
+unique(Sales_Export_2019_2020$category)</code></pre>
+<pre><code>##  [1] &quot;Books&quot;       &quot;Games&quot;       &quot;Clothing&quot;    &quot;Beauty&quot;      &quot;Accessories&quot;
+##  [6] &quot;Appliances&quot;  &quot;Smartphones&quot; &quot;Outdoors&quot;    &quot;Electronics&quot; &quot;Other&quot;</code></pre>
+<pre class="r"><code>#Attributes in customer_name 
+unique(Sales_Export_2019_2020$customer_name)</code></pre>
+<pre><code>##  [1] &quot;Goldner-Dibbert&quot;                     
+##  [2] &quot;Hilll-Vandervort&quot;                    
+##  [3] &quot;Larkin-Collier&quot;                      
+##  [4] &quot;Hessel-Stiedemann&quot;                   
+##  [5] &quot;Johns and Sons&quot;                      
+##  [6] &quot;Farrell, Swaniawski and Crist&quot;       
+##  [7] &quot;Schoen-Keeling&quot;                      
+##  [8] &quot;Hermiston, Simonis and Wisoky&quot;       
+##  [9] &quot;Gislason-Stanton&quot;                    
+## [10] &quot;Swaniawski, Runolfsson and Green&quot;    
+## [11] &quot;Wisoky Inc&quot;                          
+## [12] &quot;Tillman and Sons&quot;                    
+## [13] &quot;Rowe, Hermiston and Kessler&quot;         
+## [14] &quot;Stamm Inc&quot;                           
+## [15] &quot;Romaguera-Dietrich&quot;                  
+## [16] &quot;Franecki-White&quot;                      
+## [17] &quot;Jacobson, Marvin and Brown&quot;          
+## [18] &quot;Armstrong-Little&quot;                    
+## [19] &quot;Murray, Reichel and Nolan&quot;           
+## [20] &quot;Considine-Fisher&quot;                    
+## [21] &quot;Kirlin and Sons&quot;                     
+## [22] &quot;Friesen-Rath&quot;                        
+## [23] &quot;Keeling, Monahan and Pollich&quot;        
+## [24] &quot;Dibbert Inc&quot;                         
+## [25] &quot;Labadie and Sons&quot;                    
+## [26] &quot;Wiza and Sons&quot;                       
+## [27] &quot;Schmitt, Purdy and Johnson&quot;          
+## [28] &quot;Hamill, Kulas and Roob&quot;              
+## [29] &quot;Fisher, Morar and Skiles&quot;            
+## [30] &quot;McGlynn-Bergstrom&quot;                   
+## [31] &quot;Spencer, Rogahn and Muller&quot;          
+## [32] &quot;Wunsch LLC&quot;                          
+## [33] &quot;Walter LLC&quot;                          
+## [34] &quot;Christiansen, Donnelly and Bechtelar&quot;
+## [35] &quot;Altenwerth-Konopelski&quot;               
+## [36] &quot;Hegmann Group&quot;                       
+## [37] &quot;Leffler, Prohaska and Streich&quot;       
+## [38] &quot;Smith Group&quot;                         
+## [39] &quot;Zieme, Bailey and Herzog&quot;            
+## [40] &quot;Bashirian, Okuneva and Bechtelar&quot;    
+## [41] &quot;McGlynn-Prosacco&quot;                    
+## [42] &quot;O&#39;Connell-Mitchell&quot;                  
+## [43] &quot;West-Cummings&quot;                       
+## [44] &quot;Shanahan, Schaden and Parker&quot;        
+## [45] &quot;Lubowitz, McLaughlin and Erdman&quot;     
+## [46] &quot;Rath-Schroeder&quot;                      
+## [47] &quot;Dickinson, Hyatt and Berge&quot;          
+## [48] &quot;McClure Inc&quot;                         
+## [49] &quot;Hane Inc&quot;                            
+## [50] &quot;Kihn Inc&quot;                            
+## [51] &quot;Schowalter, Lesch and Beahan&quot;        
+## [52] &quot;Corwin and Sons&quot;                     
+## [53] &quot;Lueilwitz, Kerluke and Lesch&quot;        
+## [54] &quot;Morissette Group&quot;                    
+## [55] &quot;Tromp LLC&quot;                           
+## [56] &quot;Marquardt-Kuvalis&quot;                   
+## [57] &quot;Romaguera-Haley&quot;                     
+## [58] &quot;Konopelski LLC&quot;                      
+## [59] &quot;Stehr LLC&quot;                           
+## [60] &quot;Parisian, Steuber and Satterfield&quot;   
+## [61] &quot;Homenick-Marvin&quot;                     
+## [62] &quot;Friesen and Sons&quot;                    
+## [63] &quot;Stehr-Bogan&quot;                         
+## [64] &quot;Connelly-Mohr&quot;                       
+## [65] &quot;Hartmann, Hane and Pfannerstill&quot;     
+## [66] &quot;Gleichner-Green&quot;                     
+## [67] &quot;Baumbach Group&quot;                      
+## [68] &quot;Wyman Group&quot;                         
+## [69] &quot;Stamm-Zulauf&quot;                        
+## [70] &quot;Gorczany-Lehner&quot;                     
+## [71] &quot;Schuster Inc&quot;                        
+## [72] &quot;Heaney, Gulgowski and Kshlerin&quot;      
+## [73] &quot;Littel-Blick&quot;                        
+## [74] &quot;Abbott, Roberts and Torp&quot;            
+## [75] &quot;Lind, Mueller and Stoltenberg&quot;</code></pre>
+<pre class="r"><code>#attributes in sales_manager
+unique(Sales_Export_2019_2020$sales_manager)</code></pre>
+<pre><code>##  [1] &quot;Maxie Marrow&quot;     &quot;Hube Corey&quot;       &quot;Celine Tumasian&quot;  &quot;Emalia Dinse&quot;    
+##  [5] &quot;Jessamine Apark&quot;  &quot;Othello Bowes&quot;    &quot;Denice Amberg&quot;    &quot;Lambert Norheny&quot; 
+##  [9] &quot;Charil Alpe&quot;      &quot;Ilsa Kob&quot;         &quot;Piggy Roscrigg&quot;   &quot;Glenine Suttaby&quot; 
+## [13] &quot;Rickard Doogood&quot;  &quot;Modestia Byfford&quot; &quot;Orsa Geekin&quot;</code></pre>
+<pre class="r"><code>#Attributes in sales_rep
+unique(Sales_Export_2019_2020$sales_rep)</code></pre>
+<pre><code>##  [1] &quot;Madelon Bront&quot;       &quot;Wat Bowkley&quot;         &quot;Smitty Culverhouse&quot; 
+##  [4] &quot;Aurelie Wren&quot;        &quot;Bertha Walbrook&quot;     &quot;Perri Aldersley&quot;    
+##  [7] &quot;Winny Agnolo&quot;        &quot;Maighdiln Upcraft&quot;   &quot;Genevra Charrisson&quot; 
+## [10] &quot;Anita Woakes&quot;        &quot;Amelina Piscopiello&quot; &quot;Jay Morefield&quot;      
+## [13] &quot;Corene Shirer&quot;       &quot;Alyosha Meah&quot;        &quot;Nero Harbisher&quot;     
+## [16] &quot;Hortense Gerring&quot;    &quot;Collin Mackness&quot;     &quot;Shermy McGready&quot;    
+## [19] &quot;Jocelyn Laurentino&quot;  &quot;Caro Morfield&quot;       &quot;Crysta Halls&quot;       
+## [22] &quot;Ora Grennan&quot;         &quot;Joshua Prevost&quot;      &quot;Avrit Chanders&quot;     
+## [25] &quot;Bernadine Fullagar&quot;  &quot;Tarrah Castelletti&quot;  &quot;Bunnie Tonbridge&quot;   
+## [28] &quot;Palm Wetherald&quot;      &quot;Casie MacBain&quot;       &quot;Brynn Dempster&quot;     
+## [31] &quot;Case Desorts&quot;        &quot;Mellicent Mattys&quot;    &quot;Bank Coumbe&quot;        
+## [34] &quot;Manuel Goudie&quot;       &quot;Cobby Andersen&quot;</code></pre>
+<pre class="r"><code>#Attributes in device_type
+unique(Sales_Export_2019_2020$device_type)    </code></pre>
+<pre><code>## [1] &quot;Mobile&quot; &quot;PC&quot;     &quot;Tablet&quot;</code></pre>
+<pre class="r"><code>#Removing duplicates
+distinct(Sales_Export_2019_2020)</code></pre>
+<pre><code>## # A tibble: 1,000 × 10
+##    country  order…¹   cost date  categ…² custo…³ sales…⁴ sales…⁵ devic…⁶ order…⁷
+##    &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;  
+##  1 Sweden    17524. 1.41e4 2/12… Books   Goldne… Maxie … Madelo… Mobile  70-051…
+##  2 Finland  116563. 9.28e4 9/26… Games   Hilll-… Hube C… Wat Bo… Mobile  28-658…
+##  3 Portugal 296466. 2.57e5 7/11… Clothi… Larkin… Celine… Smitty… PC      58-770…
+##  4 Portugal  74532. 5.98e4 4/2/… Beauty  Hessel… Celine… Aureli… PC      14-670…
+##  5 Spain    178763. 1.47e5 12/2… Games   Johns … Emalia… Bertha… Tablet  15-876…
+##  6 Spain     84900. 7.37e4 7/14… Clothi… Farrel… Emalia… Perri … PC      60-699…
+##  7 Portugal  71620. 6.22e4 2/5/… Books   Schoen… Celine… Smitty… PC      69-625…
+##  8 UK       156585. 1.27e5 8/30… Access… Hermis… Jessam… Winny … PC      64-576…
+##  9 Portugal  78461. 6.35e4 5/10… Applia… Hessel… Celine… Smitty… Mobile  91-412…
+## 10 France    64828. 5.60e4 1/20… Applia… Gislas… Othell… Maighd… PC      62-331…
+## # … with 990 more rows, and abbreviated variable names ¹​order_value_EUR,
+## #   ²​category, ³​customer_name, ⁴​sales_manager, ⁵​sales_rep, ⁶​device_type,
+## #   ⁷​order_id</code></pre>
+<pre class="r"><code>#identifying number of rows
+nrow(Sales_Export_2019_2020)</code></pre>
+<pre><code>## [1] 1000</code></pre>
+<pre class="r"><code>#Identifying outliers. 
+boxplot(Sales_Export_2019_2020$cost) </code></pre>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABUAAAAPACAMAAADDuCPrAAAAsVBMVEUAAAAAACsAAFUAKysAK1UAK4AAVaorAAArKwArKysrVVUrVYArVaorgNRVAABVKwBVKytVVVVVVYBVgIBVgKpVqtRVqv+AKwCAVQCAVSuAgKqAqqqAqtSAqv+A1P+qVQCqVSuqgFWqgKqqqoCqqqqqqtSq1Kqq1NSq1P+q///T09PUgCvUgFXUqlXUqoDUqqrU1KrU1NTU1P/U////qlX/1ID/1Kr/1NT//6r//9T///8oHbt3AAAACXBIWXMAAB2HAAAdhwGP5fFlAAAbc0lEQVR4nO3dbXeb1ZmGYZtSXKAteErfpkxDWjOhw2toQmv//x82UrwSS35CtJ/Le0v7do/jSydZxCsr69I5liXfPrsBIHJ26r8AQFUCChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUIDQ3AE9A+imf6K6f8SOTv2vDTwu3RvV+wP2NOD/YQD/sQQUICSgACEBBQgJKEBIQAFCAgoQElCAkIAC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DGEoNCkU0O0p0KefXtwFdFvUdT8SyeOCNoZCk1IBfeVVRV8H9P2vDv73ezwugH7qBfTO9d9W5lNAgZ4qBzQgoEA/AgoQElCAkIAChAQUICSgsGQoNBFQWDIUmggoLBkKTQQUlgyFJgIKS4ZCEwGFJUOhiYDCkqHQREBhyVBoIqCwZCg0EVCAkIAChAQUICSgACEBBQgJKEBIQAFCAgpLhkITAYUlQ6GJgMKSodBEQGHJUGgioLBkKDQRUFgyFJoIKCwZCk0ElGLOHpNT/2PyQAJKLadOXl+n/tfkgQQUICSgACEBBQgJKEBIQAFCAgoQElCAkIAChAQUICSgACEBBQgJKEBIQAFCAgoQElCAkIAChAQUICSgACEBBQgJKEBIQAFC/3EBBeine6N6f8CeTv2PDTwu3RvV+wMC/KcQUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKE/h8AQs1hzRvGkwAAAABJRU5ErkJggg==" width="672" /></p>
+<pre class="r"><code>boxplot(Sales_Export_2019_2020$order_value_EUR)</code></pre>
+<p><img src="data:image/png;base64,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ChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQg9N8+bmGI32+uBAAAAABJRU5ErkJggg==" width="672" /></p>
+<pre class="r"><code>#Previewing dataset.
+glimpse(Sales_Export_2019_2020)</code></pre>
+<pre><code>## Rows: 1,000
+## Columns: 10
+## $ country         &lt;chr&gt; &quot;Sweden&quot;, &quot;Finland&quot;, &quot;Portugal&quot;, &quot;Portugal&quot;, &quot;Spain&quot;, …
+## $ order_value_EUR &lt;dbl&gt; 17524.02, 116563.40, 296465.56, 74532.02, 178763.42, 8…
+## $ cost            &lt;dbl&gt; 14122.61, 92807.78, 257480.34, 59752.32, 146621.76, 73…
+## $ date            &lt;chr&gt; &quot;2/12/2020&quot;, &quot;9/26/2019&quot;, &quot;7/11/2019&quot;, &quot;4/2/2020&quot;, &quot;12…
+## $ category        &lt;chr&gt; &quot;Books&quot;, &quot;Games&quot;, &quot;Clothing&quot;, &quot;Beauty&quot;, &quot;Games&quot;, &quot;Clot…
+## $ customer_name   &lt;chr&gt; &quot;Goldner-Dibbert&quot;, &quot;Hilll-Vandervort&quot;, &quot;Larkin-Collier…
+## $ sales_manager   &lt;chr&gt; &quot;Maxie Marrow&quot;, &quot;Hube Corey&quot;, &quot;Celine Tumasian&quot;, &quot;Celi…
+## $ sales_rep       &lt;chr&gt; &quot;Madelon Bront&quot;, &quot;Wat Bowkley&quot;, &quot;Smitty Culverhouse&quot;, …
+## $ device_type     &lt;chr&gt; &quot;Mobile&quot;, &quot;Mobile&quot;, &quot;PC&quot;, &quot;PC&quot;, &quot;Tablet&quot;, &quot;PC&quot;, &quot;PC&quot;, …
+## $ order_id        &lt;chr&gt; &quot;70-0511466&quot;, &quot;28-6585323&quot;, &quot;58-7703341&quot;, &quot;14-6700183&quot;…</code></pre>
+
+
+
+
+</div>
+</div>
+</body>
+
+</div>
+
+
+<!-- code folding -->
+
+
+
+</body>
+</html>
