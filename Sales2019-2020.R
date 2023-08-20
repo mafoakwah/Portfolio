@@ -144,7 +144,26 @@ for (country in unique(CoProfit$country)) {
 }
 
 
-````
+for (country in unique(CoProfit$country)) {
+  country_data <- CoProfit %>%
+    filter(country == country)  # Use the variable, not the string 'country'
+  
+  labels <- country_data$category
+  values <- country_data$GProfit
+  
+  fig <- plot_ly(type='pie', labels=labels, values=values, 
+                 textinfo='label+percent',
+                 insidetextorientation='radial')
+  
+  fig <- fig %>% layout(title = paste("Ratio Based on Gross Profit -", country),
+                        xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+                        yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+  
+  
+  print(fig)
+}
+
+
 
 
 

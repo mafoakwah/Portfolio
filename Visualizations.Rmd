@@ -1,9 +1,10 @@
 ---
 title: "Visualization"
-output: html_document
-runtime: shiny
-editor_options: 
-  markdown: 
+output:
+  html_document:
+    df_print: paged
+editor_options:
+  markdown:
     wrap: 72
 ---
 
@@ -136,16 +137,33 @@ p <- ggplotly(orderval, tooltip = c("x", "y", "color"))
 p
 
 ```
-I utilize the ggplot function with our Sales_Export_2019_2020 data to create a visualization. To establish visual characteristics, I make use of the aes function, with the x-axis displaying the country variable and the y-axis representing "Order_value_EUR." Furthermore, I associate the "category" variable with color and fill aesthetics to differentiate between visual categories.
 
-I create a smoothed line on the plot using the geom_smooth function with the "loess" method. The group aesthetic is set to "category" to ensure each category has its own smoothed line, and the smoothing equation is outlined in the formula parameter.
+I utilize the ggplot function with our Sales_Export_2019_2020 data to
+create a visualization. To establish visual characteristics, I make use
+of the aes function, with the x-axis displaying the country variable and
+the y-axis representing "Order_value_EUR." Furthermore, I associate the
+"category" variable with color and fill aesthetics to differentiate
+between visual categories.
 
-To enhance the legibility of x-axis text labels, I use the theme function to adjust the angle to 45 degrees and align the labels to the right using the hjust = 1 setting. I also format the y-axis labels using the scale_y_continuous function with the scales::comma function to add commas for better readability.
+I create a smoothed line on the plot using the geom_smooth function with
+the "loess" method. The group aesthetic is set to "category" to ensure
+each category has its own smoothed line, and the smoothing equation is
+outlined in the formula parameter.
 
-To add a title and axis labels, I use the labs function. Lastly, I convert the ggplot visualization (orderval) into an interactive Plotly graph with the ggplotly function, and customize the tooltip parameter to display the relevant information when hovering over data points.
+To enhance the legibility of x-axis text labels, I use the theme
+function to adjust the angle to 45 degrees and align the labels to the
+right using the hjust = 1 setting. I also format the y-axis labels using
+the scale_y_continuous function with the scales::comma function to add
+commas for better readability.
 
-The resulting interactive Plotly graph (p) provides an insightful visualization of order values across various countries, enriched with interactivity and tailor-made tooltips.
+To add a title and axis labels, I use the labs function. Lastly, I
+convert the ggplot visualization (orderval) into an interactive Plotly
+graph with the ggplotly function, and customize the tooltip parameter to
+display the relevant information when hovering over data points.
 
+The resulting interactive Plotly graph (p) provides an insightful
+visualization of order values across various countries, enriched with
+interactivity and tailor-made tooltips.
 
 ```{r}
 #Grouped column chart to visualize the total sales of each country's exports by category
@@ -160,11 +178,20 @@ tcc <- ggplotly(TCCSales)
 #Displaying Plotly graph.
 tcc
 ```
-This code generates an interactive plotly graph based on a ggplot2 visualization, displaying the total sales of countries' exports by category. The ggplot function creates a bar plot (geom_col) using the dataset CountryTotalSaleExport with defined aesthetics (aes) for the x-axis representing the "country" variable and the y-axis representing "saleCategoryTotal." The "category" variable determines the fill color of the bars. Customizations are applied to the plot, including angled and right-aligned x-axis text labels, a title, specified labels for the x and y axes, and formatted y-axis labels with commas for thousands. The ggplot object (TCCSales) is converted into an interactive plotly graph using the ggplotly function, which allows for interactive features like hovering, zooming, and panning. The result is an easy-to-understand visualization of sales data using both ggplot2 and plotly in R.
 
-
-
-
+This code generates an interactive plotly graph based on a ggplot2
+visualization, displaying the total sales of countries' exports by
+category. The ggplot function creates a bar plot (geom_col) using the
+dataset CountryTotalSaleExport with defined aesthetics (aes) for the
+x-axis representing the "country" variable and the y-axis representing
+"saleCategoryTotal." The "category" variable determines the fill color
+of the bars. Customizations are applied to the plot, including angled
+and right-aligned x-axis text labels, a title, specified labels for the
+x and y axes, and formatted y-axis labels with commas for thousands. The
+ggplot object (TCCSales) is converted into an interactive plotly graph
+using the ggplotly function, which allows for interactive features like
+hovering, zooming, and panning. The result is an easy-to-understand
+visualization of sales data using both ggplot2 and plotly in R.
 
 ### Cost Per Category for Each Country
 
@@ -181,15 +208,29 @@ TCCC <- ggplotly(TCCCost)
 #Displaying Plotly Graph.
 TCCC
 ```
-This code generates an interactive graph using Plotly based on a ggplot2 visualization. The scatter plot connects the points with lines, created by the ggplot function. The data used is the CountryTotalcostExport dataset, with the x-axis representing the "country" variable and the y-axis representing "costCategoryTotal", while the "category" variable determines the color of the points and lines. 
 
-To customize the appearance of the plot, the x-axis text labels are angled at 45 degrees and aligned to the right, a title is added, and labels for the x and y axes are specified. The y-axis labels are also formatted with commas for thousands. 
+This code generates an interactive graph using Plotly based on a ggplot2
+visualization. The scatter plot connects the points with lines, created
+by the ggplot function. The data used is the CountryTotalcostExport
+dataset, with the x-axis representing the "country" variable and the
+y-axis representing "costCategoryTotal", while the "category" variable
+determines the color of the points and lines.
 
-The ggplot object (TCCCost) is then forcefully converted into an interactive Plotly graph using the ggplotly function. This conversion retains interactivity features such as tooltips, zooming, and panning. Finally, the interactive Plotly graph (TCCC) is assertively displayed. 
+To customize the appearance of the plot, the x-axis text labels are
+angled at 45 degrees and aligned to the right, a title is added, and
+labels for the x and y axes are specified. The y-axis labels are also
+formatted with commas for thousands.
 
-In summary, this code allows for the visualization of the total cost of countries' exports by category using both ggplot2 and Plotly in R. The scatter points are connected by lines for each category, allowing for the observation of trends over the x-axis (countries) for different cost categories.
+The ggplot object (TCCCost) is then forcefully converted into an
+interactive Plotly graph using the ggplotly function. This conversion
+retains interactivity features such as tooltips, zooming, and panning.
+Finally, the interactive Plotly graph (TCCC) is assertively displayed.
 
-
+In summary, this code allows for the visualization of the total cost of
+countries' exports by category using both ggplot2 and Plotly in R. The
+scatter points are connected by lines for each category, allowing for
+the observation of trends over the x-axis (countries) for different cost
+categories.
 
 ### Gross Profit for Each Country
 
@@ -209,15 +250,31 @@ CG <- ggplotly(CGProfit, tooltip = c("x", "y"))
 CG
 
 ```
-The generation of an interactive graph using Plotly based on a ggplot2 visualization is made easy with this program. The scatter plot is expertly created using the ggplot function, skillfully connecting the points using lines. The dataset used is the CountryTotalcostExport, where the x-axis represents "country" and the y-axis represents "costCategoryTotal," while the "category" variable determines the color of the points and lines.
 
-To improve the plot's appearance, the x-axis text labels are angled at 45 degrees and aligned to the right, a title is added, and precise labels for the x and y axes are specified. The y-axis labels are also meticulously formatted with commas for thousands.
+The generation of an interactive graph using Plotly based on a ggplot2
+visualization is made easy with this program. The scatter plot is
+expertly created using the ggplot function, skillfully connecting the
+points using lines. The dataset used is the CountryTotalcostExport,
+where the x-axis represents "country" and the y-axis represents
+"costCategoryTotal," while the "category" variable determines the color
+of the points and lines.
 
-The ggplot object (TCCCost) is then seamlessly transformed into an interactive Plotly graph using the ggplotly function, flawlessly preserving interactive features like tooltips, zooming, and panning. Finally, the interactive Plotly graph (TCCC) is effortlessly displayed.
+To improve the plot's appearance, the x-axis text labels are angled at
+45 degrees and aligned to the right, a title is added, and precise
+labels for the x and y axes are specified. The y-axis labels are also
+meticulously formatted with commas for thousands.
 
-In conclusion, this program allows for the visualization of the total cost of countries' exports by category with both ggplot2 and Plotly in R. The scatter points are cleverly linked by lines for each category, enabling the observation of trends over the x-axis (countries) for different cost categories. With this program, you can confidently create impressive interactive graphs with ease.
+The ggplot object (TCCCost) is then seamlessly transformed into an
+interactive Plotly graph using the ggplotly function, flawlessly
+preserving interactive features like tooltips, zooming, and panning.
+Finally, the interactive Plotly graph (TCCC) is effortlessly displayed.
 
-
+In conclusion, this program allows for the visualization of the total
+cost of countries' exports by category with both ggplot2 and Plotly in
+R. The scatter points are cleverly linked by lines for each category,
+enabling the observation of trends over the x-axis (countries) for
+different cost categories. With this program, you can confidently create
+impressive interactive graphs with ease.
 
 ### Gross Profit based on Category
 
@@ -233,13 +290,26 @@ CP <- ggplotly(CProfit, tooltip = c("x", "y"))
 #Display Plotly graph.
 CP
 ```
-This code generates an interactive Plotly graph based on a ggplot2 visualization to create a tiled heatmap using data from the CategoryProfit dataset. The aesthetics are set up with the x-axis representing the "category" variable, the y-axis representing "GrossProfit," and the fill color determined by the "category" variable. Customizations are applied to the appearance of the plot, including formatting the y-axis labels with commas for thousands, angling the x-axis text labels at 45 degrees and aligning them to the right, assigning a title to the plot, and specifying labels for the x and y axes.
 
-The ggplot object (CProfit) is then converted into an interactive Plotly graph using the ggplotly function, with the tooltip parameter set up to display the "x" and "y" values when hovering over the tiles.
+This code generates an interactive Plotly graph based on a ggplot2
+visualization to create a tiled heatmap using data from the
+CategoryProfit dataset. The aesthetics are set up with the x-axis
+representing the "category" variable, the y-axis representing
+"GrossProfit," and the fill color determined by the "category" variable.
+Customizations are applied to the appearance of the plot, including
+formatting the y-axis labels with commas for thousands, angling the
+x-axis text labels at 45 degrees and aligning them to the right,
+assigning a title to the plot, and specifying labels for the x and y
+axes.
 
-In short, this code allows for the visualization of Gross Profit by category for the years 2019-2020 using both ggplot2 and Plotly in R. The heatmap tiles represent different categories, and the interactivity enables viewing of specific values by hovering over the tiles.
+The ggplot object (CProfit) is then converted into an interactive Plotly
+graph using the ggplotly function, with the tooltip parameter set up to
+display the "x" and "y" values when hovering over the tiles.
 
-
+In short, this code allows for the visualization of Gross Profit by
+category for the years 2019-2020 using both ggplot2 and Plotly in R. The
+heatmap tiles represent different categories, and the interactivity
+enables viewing of specific values by hovering over the tiles.
 
 ```{r include=FALSE}
 
@@ -259,9 +329,7 @@ CoProfit$ProfitPercentage <- label_percent(big.mark = ",", suffix = "%")(CoProfi
 CoProfit %>% datatable()
 ```
 
-
-
-```{r echo=TRUE, fig.retina=1, fig.show="hold"}
+```{r eval=FALSE, fig.retina=1, fig.show="hold", include=TRUE}
 #Load Shiny library.
 library(shiny)
 
@@ -315,12 +383,23 @@ shinyApp(ui = ui, server = server)
 
 
 
+In this code, the UI has been defined using fluidPage and includes a
+title panel, a sidebar panel with a dropdown menu for selecting a
+country, and a main panel that displays a pie chart using plotlyOutput.
 
-In this code, the UI has been defined using fluidPage and includes a title panel, a sidebar panel with a dropdown menu for selecting a country, and a main panel that displays a pie chart using plotlyOutput. 
+The server function has been used to define the server logic, rendering
+a plotly pie chart based on user-selected data from the CoProfit dataset
+for the chosen country. The category column is assigned to the labels
+variable and the GProfit column is assigned to the values variable. An
+interactive pie chart is created using plot_ly, with textinfo set to
+show both the label and percentage and insidetextorientation set to
+'radial'.
 
-The server function has been used to define the server logic, rendering a plotly pie chart based on user-selected data from the CoProfit dataset for the chosen country. The category column is assigned to the labels variable and the GProfit column is assigned to the values variable. An interactive pie chart is created using plot_ly, with textinfo set to show both the label and percentage and insidetextorientation set to 'radial'. 
+The layout function is used to customize the pie chart, with the title
+displaying the selected country name and the x and y axes configured to
+hide grid lines, zero lines, and tick labels.
 
-The layout function is used to customize the pie chart, with the title displaying the selected country name and the x and y axes configured to hide grid lines, zero lines, and tick labels. 
-
-Lastly, the shinyApp function is used to run the Shiny app, combining the UI and server components. Users can easily select a country and view an interactive pie chart displaying the total gross profit based on category contribution for that country.
-
+Lastly, the shinyApp function is used to run the Shiny app, combining
+the UI and server components. Users can easily select a country and view
+an interactive pie chart displaying the total gross profit based on
+category contribution for that country.

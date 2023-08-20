@@ -1,0 +1,211 @@
+---
+title: "Data Exploration (SQL)"
+author: "Matthew Afoakwah"
+date: "2023-08-19"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(DBI)
+library(RMySQL)
+
+# Set up connection parameters
+db_host <- "localhost"  # Usually "localhost"
+db_name <- "r"
+db_user <- "root"
+db_pass <- ""
+
+# Establish connection
+con <- dbConnect(
+  MySQL(),
+  host = db_host,
+  user = db_user,
+  password = db_pass,
+  dbname = db_name
+  
+  
+)
+```
+
+
+
+My goal in this project is to utilize SQL to examine and generate insights from the state graduates dataset. This dataset includes information on graduates from various state institutions between 2002 and 2013, including their state location, college type (public or private), institution level (two-year or four-year), gender, race/ethnicity, and cohort size.
+
+Additionally, it provides data on the number of students who graduated within 100% and 150% of normal time, as well as the corresponding graduation rates. The dataset also includes the total number of students in each cohort.
+```{r include=FALSE}
+query <- "SELECT * FROM `state graduates`"
+data <- dbGetQuery(con, query)
+
+# Display the retrieved data
+
+print(data)
+
+```
+
+
+
+
+```{sql connection=con}
+-- Retrieves data from the 'state graduates' table and calculates the total number of graduates for each state, year, and cohort.
+-- Filters the data for years after 2008 and then groups the results by state abbreviation, year, and cohort. The results are sorted in ascending order of state abbreviation, year, and descending order of cohort.
+#CREATE VIEW StateGrads AS            -- Creating a view named 'StateGrads'
+SELECT 
+    state_abbr,       -- Selecting the state abbreviation column
+    year,             -- Selecting the year column
+    control,          -- Selecting the control column
+    cohort,           -- Selecting the cohort column
+    SUM(grad_cohort) AS TotalGrads  -- Calculating the sum of 'grad_cohort' column and aliasing it as 'TotalGrads'
+FROM 
+    `state graduates`  -- Referring to the 'state graduates' table
+WHERE 
+    year > 2008        -- Filtering rows where the year is greater than 2008
+GROUP BY 
+    state_abbr, year, cohort  -- Grouping the results by state abbreviation, year, and cohort
+ORDER BY 
+    state_abbr, year, cohort DESC;  -- Sorting the results in ascending order of state abbreviation, year, and descending order of cohort
+
+
+
+```
+```{r include=FALSE, eval=FALSE}
+query <- "SELECT * FROM `StateGrads`"
+data <- dbGetQuery(con, query)
+
+head(data)
+```
+
+The SQL query operates on a table called 'state graduates'. It retrieves specific columns like state_abbr, year, control, cohort, and calculates the sum of the grad_cohort 
+column for each group of state_abbr, year, and cohort. The query only includes rows where the year is greater than 2008. The GROUP BY clause groups the results based on the 
+selected columns: state_abbr, year, and cohort. 
+
+This aggregates data for each unique combination of state, year, and cohort. 
+The ORDER BY clause sorts the results in ascending order of state_abbr, year, and descending order of cohort. The results display the state abbreviation, year, control type, cohort, 
+and the total number of graduates (TotalGrads) for each group that meets the specified conditions. Keep in mind that this explanation assumes a general understanding of SQL syntax and concepts. 
+The actual behavior may vary based on the structure of the 'state graduates' table and the database system being used.
+
+
+```{sql connection=con}
+
+-- Retrieves data from the 'state graduates' table and calculates the total number of graduates by gender for each state, year, and gender category.
+-- Filters the data to exclude records where gender is 'B' or 'g', and includes only years after 2008.
+
+#CREATE VIEW GradsByGender AS            -- Creating a view named 'GradsByGender'
+SELECT 
+    state_abbr,                      -- Selecting the state abbreviation column
+    gender,                          -- Selecting the gender column
+    year,                            -- Selecting the year column
+    SUM(grad_cohort) AS TotalGradbygender  -- Calculating the sum of 'grad_cohort' column and aliasing it as 'TotalGradbygender'
+FROM 
+    `state graduates`                -- Referring to the 'state graduates' table
+WHERE 
+    gender != 'B' AND gender != 'g'  -- Filtering out rows where gender is 'B' or 'g'
+    AND year > 2008                  -- Including only rows with years greater than 2008
+GROUP BY 
+    state_abbr, gender, year         -- Grouping the results by state abbreviation, gender, and year
+ORDER BY 
+    state_abbr, gender, year;        -- Sorting the results in ascending order of state abbreviation, gender, and year
+
+
+```
+```{r include=FALSE, , eval=FALSE}
+query <- "SELECT * FROM `GradsByGender`"
+data <- dbGetQuery(con, query)
+
+head(data)
+```
+
+Using the 'state graduates' table, this SQL query analyzes data related to graduation cohorts and gender. It selects 
+specific columns such as state_abbr, gender, year and calculates the sum of the grad_cohort column for each group. 
+
+The WHERE clause filters the results to exclude records where the gender is 'B' (probably for 'both') or 'g', and it only 
+includes rows where the year is greater than 2008. The GROUP BY clause groups the results based on the selected columns, 
+namely state_abbr, gender, and year. 
+
+This means that the query aggregates data for each unique combination of state, gender, and year. The ORDER BY clause sorts 
+the results in ascending order of state_abbr, gender, and year. The results will display the state abbreviation, gender, year, 
+and the total number of graduates (TotalGradbygender) for each group that meets the specified conditions. Please note that this 
+explanation assumes a general understanding of SQL concepts and syntax, and the actual behavior may vary based on the structure 
+of the 'state graduates' table and the database system in use.
+
+```{sql connection=con}
+-- This SQL statement creates a view named 'GradsByRace' that calculates the total number of graduates by race in each state for the year 2013.
+
+#CREATE VIEW GradsByRace2013 AS            -- Creating a view named 'GradsByRace'
+
+
+SELECT 
+    race,                             -- Selecting the race column
+    year,                             -- Selecting the year column
+    state_abbr,                       -- Selecting the state abbreviation column
+    SUM(grad_cohort) AS Gradbyrace    -- Calculating the sum of 'grad_cohort' column and aliasing it as 'Gradbyrace'
+FROM 
+    `state graduates`                 -- Referring to the 'state graduates' table
+WHERE 
+    year = 2013                        -- Filtering rows where the year is 2013
+GROUP BY 
+    state_abbr, race, year             -- Grouping the results by state abbreviation, race, and year
+ORDER BY 
+    state_abbr, race, year DESC;       -- Sorting the results in ascending order of state abbreviation, race, and descending order of year
+    
+
+
+```
+```{r include=FALSE, eval=FALSE}
+query <- "SELECT * FROM `GradsByRace2013`"
+data <- dbGetQuery(con, query)
+
+head(data)
+```
+A view called 'GradsByRace' can be created using this SQL statement. It is a virtual table that stores the results of a specific query for easy reference. 
+The query selects columns such as race, year, and state_abbr, and calculates the sum of grad_cohort for each group based on state_abbr, race, and year. 
+It filters the results to only show data from 2013 and groups them according to state_abbr, race, and year. Finally, the data is sorted in ascending 
+order by state_abbr and race, and then in descending order by year. By using this view, you can retrieve aggregated data on graduates by race in each state for the year 2013. 
+
+This can simplify the querying process and provide a consistent and reusable way to access this specific information.
+
+```{sql connection=con}
+-- Calculates the percentage of graduates by race in each state for each year.
+#CREATE VIEW GradsByRaceRatio AS            -- Creating a view named 'GradsByRaceRatio'
+SELECT 
+    race,                            -- Selecting the race column
+    year,                            -- Selecting the year column
+    state_abbr,                      -- Selecting the state abbreviation column
+    SUM(grad_cohort) AS Gradbyrace,  -- Calculating the sum of 'grad_cohort' column and aliasing it as 'Gradbyrace'
+    SUM(grad_cohort) / (SELECT SUM(grad_cohort) FROM `state graduates` WHERE year = s.year) * 100 AS Percentage  -- Calculating the percentage of graduates for each race in each state and year
+FROM 
+    `state graduates` s               -- Referring to the 'state graduates' table and aliasing it as 's'
+WHERE 
+    year = s.year                      -- Filtering rows where the year matches the year being considered in the outer query
+GROUP BY 
+    state_abbr, race, year            -- Grouping the results by state abbreviation, race, and year
+ORDER BY 
+    state_abbr, race, year DESC;      -- Sorting the results in ascending order of state abbreviation, race, and descending order of year
+
+
+```
+```{r include=FALSE, eval=FALSE}
+query <- "SELECT * FROM `GradsByRaceRatio`"
+data <- dbGetQuery(con, query)
+
+head(data)
+```
+
+This query uses SQL to calculate the percentage of graduates for each race in each state for a given year, using data from the 'state graduates' table. 
+It selects columns for race, year, and state abbreviation, and calculates the sum of the grad_cohort column for each grouping. The subquery, which calculates 
+the total number of graduates for the specific year being considered, is achieved by selecting the sum of grad_cohort from the 'state graduates' table where the 
+year equals the year in the outer query. 
+
+The outer query then calculates the percentage by dividing the sum of grad_cohort by the total number of graduates for that year (from the subquery) and multiplying the result by 100. The WHERE clause filters the results to only include rows where the year matches the year being considered in the outer query, ensuring that only data for the specific year is used in each calculation. 
+
+The results are then grouped based on state abbreviation, race, and year using the GROUP BY clause. Finally, the results are sorted in ascending order of state abbreviation, race, and descending order of year using the ORDER BY clause. To apply this query to your own data, replace 'state graduates' with the name of your table and ensure that the column names match your database schema. The resulting output will display the percentage of graduates for each race in each state and year, based on the total number of graduates for that specific year.
+
+
+
+
+```{r}
+dbDisconnect(con)
+```
+

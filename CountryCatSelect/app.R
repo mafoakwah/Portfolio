@@ -1,0 +1,111 @@
+#
+# This is a Shiny web application. You can run the application by clicking
+# the 'Run App' button above.
+#
+# Find out more about building applications with Shiny here:
+#
+#    http://shiny.rstudio.com/
+#
+
+library(shiny)
+library(plotly)
+library(tidyverse)
+library(plotly)
+library(DT)
+library(scales)
+Sales_Export_2019_2020 <- read_csv("Sales-Export_2019-2020.csv")
+
+#Number of rows and column in dataset.
+dim(Sales_Export_2019_2020)
+#Column Names.
+names(Sales_Export_2019_2020)
+
+#Number of NA value in Database.
+sum(is.na(Sales_Export_2019_2020))
+
+#Determining different attributes in each char attribute.
+unique(Sales_Export_2019_2020$country)
+
+unique(Sales_Export_2019_2020$category)
+
+unique(Sales_Export_2019_2020$customer_name)
+
+unique(Sales_Export_2019_2020$sales_manager)
+
+unique(Sales_Export_2019_2020$sales_rep)
+
+unique(Sales_Export_2019_2020$device_type)    
+
+#Removing duplicates
+distinct(Sales_Export_2019_2020)
+
+#identifying number of rows
+nrow(Sales_Export_2019_2020)
+
+#Identifying outliers. 
+boxplot(Sales_Export_2019_2020$cost)
+boxplot(Sales_Export_2019_2020$order_value_EUR)
+
+#Previewing dataset.
+glimpse(Sales_Export_2019_2020)
+
+
+
+#Total profit by country and category 
+CoProfit <- Sales_Export_2019_2020 %>% 
+  group_by(country) %>% mutate(CostTotal =
+                                 sum(cost), SaleTotal = sum(order_value_EUR), GrossProfit = SaleTotal -
+                                 CostTotal) %>% 
+  group_by(country, category) %>% 
+  summarise(ctotal =sum(cost), stotal = sum(order_value_EUR), GProfit = stotal - ctotal, GrossProfit, ProfitPercentage = GProfit/ GrossProfit)
+
+
+
+CoProfit <- distinct(CoProfit)
+CoProfit$ProfitPercentage <- label_percent(big.mark = ",", suffix = "%")(CoProfit$ProfitPercentage)
+
+CoProfit %>% datatable()
+
+#Load Shiny library.
+library(shiny)
+
+#Define UI.
+ui <- fluidPage(
+  titlePanel("Interactive Pie Chart"),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("country", "Select Country:", choices = unique(CoProfit$country))
+    ),
+    mainPanel(
+      plotlyOutput("pieChart")
+    )
+  )
+)
+
+#Define server.
+server <- function(input, output) {
+  output$pieChart <- renderPlotly({
+    country_data <- CoProfit %>%
+      filter(country == input$country) #Filter data where country is the same.
+    
+    #Copy category in country_data into labels.
+    labels <- country_data$category
+    values <- country_data$GProfit #Copy Gross Profit in country_data into values.
+    
+    #Create interactive graph using Plotly.
+    pie_chart <- plot_ly(type = 'pie', labels = labels, values = values, 
+                         textinfo = 'label+percent',
+                         insidetextorientation = 'radial')
+    
+    # Customize the Plotly Graph
+    pie_chart <- pie_chart %>% 
+      layout(title = paste("Total Gross Profit based on Category Contribution -", input$country),
+             xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+             yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+    
+    pie_chart
+  })
+}
+
+# Run the Shiny app
+shinyApp(ui = ui, server = server)
